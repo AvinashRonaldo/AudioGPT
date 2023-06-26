@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name = "viewport" content = "initial-scale = 2.3, user-scalable = no">
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <meta name="description" content="Simple Webapp using chatGPT and Nodejs" />
+        <meta name="author" content="Avinash K">
+        <title>AudioGPT</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <section>
+            <h1>
+                AUDIO BOT
+            </h1>
+            <button><i class="fa fa-microphone"></i></button>
+            <button id="end">End</button>
+            <div>
+                <ul id="conversation"></ul>
+            </div>
+        </section>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="audioScript.js" defer></script>
+    </body>
+</html>
