@@ -4,8 +4,11 @@ const socketio = require('socket.io');
 const http = require('http');
 const {Configuration,OpenAIApi} = require('openai');
 require('dotenv').config();
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const app = express()
+app.use(express.json());
+app.use(cors());
 app.use(express.static('public'));
 app.use(express.static(__dirname + '/views')); 
 app.use(express.static(__dirname + '/public'));
@@ -21,14 +24,37 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 async function generate_response(text){
-    const completion = await openai.createCompletion({
-        model:'text-davinci-003',
-        prompt:text,
-        temperature:0.4
+    const completion = await openai.createChatCompletion({
+        model:'gpt-3.5-turbo',
+        messages:[{role:"user",content:text}],
+        max_tokens:50
     }); 
-    const reply = completion.data.choices[0].text;
+    console.log(completion.data.choices[0]);
+    const reply = completion.data.choices[0].message.content;
     return reply;
 }
+/*async function generate_response(text){
+    const options = {
+        method:'POST',
+        headers:{
+            "Authorization":`Bearer ${process.env.OPENAI_API_KEY}`,
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            model:'gpt-3.5-turbo',
+            messages:[{role:"user",content:text}],
+            temperature:0.2,
+            max_tokens:50
+        })
+    }
+    try{
+        const result = await fetch('https://api.openai.com/v1/chat/completions',options)
+        const data = await result.json();
+        return data.choices[0].message.content;
+    } catch(err){
+        console.log(err);
+    }
+}*/
 
 io.on('connection',(socket)=>{
     console.log("User Connected")

@@ -6,13 +6,10 @@ const SpeechGrammarList =
   window.SpeechGrammarList || window.webkitSpeechGrammarList;
 const recognition = new SpeechRecognition();
 const speechRecognitionList = new SpeechGrammarList();
-//const outputYou = document.querySelector('.output-you');
-//const outputBot = document.querySelector('.output-bot');
 const endButton = document.getElementById('end');
 
 recognition.lang = 'en-IN'
-//recognition.interimResults = true;
-recognition.continous = true;
+recognition.continous = false;
 recognition.maxAlternatives = 1;
 
 document.querySelector('button').addEventListener('click',() => {
@@ -40,16 +37,11 @@ recognition.onnomatch = () => {
 
 recognition.addEventListener('result',(e)=> {
     console.log("Processing"); 
-    let last = e.resultIndex;
-    let text = e.results[last][0].transcript;
+    let text = e.results[0][0].transcript;
     console.log("Text said is",text);
     addMessage(text);
-    //outputYou.textContent = text;
     socket.emit('voice',text);
 });
-
-
-
 
 function synthVoice(text){
     const synth = window.speechSynthesis;
@@ -58,10 +50,10 @@ function synthVoice(text){
     synth.speak(utterance);
 }
 socket.on('reply',(reply)=> {
+    console.log("Replying")
     synthVoice(reply);
     if(reply=='') reply = 'No answer';
     addMessage(reply);
-    //outputBot.textContent = reply;
 })
 
 function addMessage(msg){
