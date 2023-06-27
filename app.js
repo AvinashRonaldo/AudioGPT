@@ -4,7 +4,7 @@ const socketio = require('socket.io');
 const http = require('http');
 const {Configuration,OpenAIApi} = require('openai');
 require('dotenv').config();
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
 
 const app = express()
 app.use(express.json());
@@ -33,28 +33,6 @@ async function generate_response(text){
     const reply = completion.data.choices[0].message.content;
     return reply;
 }
-/*async function generate_response(text){
-    const options = {
-        method:'POST',
-        headers:{
-            "Authorization":`Bearer ${process.env.OPENAI_API_KEY}`,
-            "Content-Type":"application/json"
-        },
-        body:JSON.stringify({
-            model:'gpt-3.5-turbo',
-            messages:[{role:"user",content:text}],
-            temperature:0.2,
-            max_tokens:50
-        })
-    }
-    try{
-        const result = await fetch('https://api.openai.com/v1/chat/completions',options)
-        const data = await result.json();
-        return data.choices[0].message.content;
-    } catch(err){
-        console.log(err);
-    }
-}*/
 
 io.on('connection',(socket)=>{
     console.log("User Connected")
@@ -72,7 +50,7 @@ app.get("/",(req,res) => {
     res.send('index.html');
 })
 
-server.listen(7000,()=> {
+server.listen(process.env.PORT,()=> {
     console.log("Server started on port 7000");
 })
 
